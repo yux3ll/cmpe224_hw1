@@ -11,32 +11,27 @@ public class DriverQ1 {
 //-----------------------------------------------------
 
     public static void main(String[] args) {
-        //read input with following parameters: first line's first int is the number of vertices, second int is the number of total bidirectional connections, third int is an independent variable for time, and fourth is travel time
-        //following lines are the connections between vertices, each line has two ints, first is the source vertex, second is the destination vertex
-        //last line is the source and destination vertices for the path to be calculated
-        Scanner sc = new Scanner(System.in);
-        int V = sc.nextInt();
-        int E = sc.nextInt();
-        int stateSwitch = sc.nextInt();
-        int travel = sc.nextInt();
-        sc.nextLine();
-        Graph g = new Graph(V);
-        for (int i = 0; i < E; i++) {
-            g.addEdge(sc.nextInt()-1, sc.nextInt()-1);
-            sc.nextLine();
+        Scanner sc = new Scanner(System.in); //to read the input
+        int V = sc.nextInt(); //number of vertices
+        int E = sc.nextInt(); //number of edges
+        int stateSwitch = sc.nextInt(); //number of state switches
+        int travel = sc.nextInt();  //number of travel
+        sc.nextLine();  //to skip the line
+        Graph g = new Graph(V); //create a graph with V vertices
+        for (int i = 0; i < E; i++) {   //add the edges to the graph
+            g.addEdge(sc.nextInt()-1, sc.nextInt()-1);  //the input is 1 indexed, so we subtract 1 to make it 0 indexed
+            sc.nextLine();  //to skip the line
         }
         int source = sc.nextInt()-1;
         int destination = sc.nextInt()-1;
-        sc.close();
-        //calculate the shortest path
-        int[] path = g.shortestPathWithStates(source, destination, stateSwitch, travel);
-        System.out.println(path[0]);
-        for (int i = 1; i < path.length-1; i++) {
+        sc.close(); //close the scanner
+        int[] path = g.shortestPathWithStates(source, destination, stateSwitch, travel);    //get the shortest path and time
+        System.out.println(path[0]);   //print the number of vertices in the path
+        for (int i = 1; i < path.length-1; i++) {   //print the path
             System.out.print(path[i]+1 + " ");
         }
-        System.out.println("\n" + path[path.length-1]);
+        System.out.println("\n" + path[path.length-1]); //print the time necessary to travel
     }
-
 }
 
 

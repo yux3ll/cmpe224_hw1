@@ -2,6 +2,14 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class Bag<Item> implements Iterable<Item> {
+//-----------------------------------------------------
+// Title: Bag
+// Author: Yüksel Çağlar Baypınar
+// ID: 43951623744
+// Section: 1
+// Assignment: 1
+// Description: Bag implementation from the book.
+//-----------------------------------------------------
     private Node<Item> first;
     private int n;
 
