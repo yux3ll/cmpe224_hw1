@@ -5,12 +5,12 @@ import java.util.NoSuchElementException;
 
 public class Bag<Item> implements Iterable<Item> {
 //-----------------------------------------------------
-// Title: Q2.Bag
+// Title: Bag
 // Author: Yüksel Çağlar Baypınar
 // ID: 43951623744
 // Section: 1
 // Assignment: 1
-// Description: Q2.Bag implementation from the book.
+// Description: Bag implementation from the book.
 //-----------------------------------------------------
     private Node<Item> first;
     private int n;
@@ -57,4 +57,15 @@ public class Bag<Item> implements Iterable<Item> {
             return item;
         }
     }
+
+    public Item get(int index) {
+            if (index >= n) {
+                throw new IndexOutOfBoundsException();
+            }
+            Node<Item> current = first;
+            for (int i = 0; i < index; i++) {
+                current = current.next;
+            }
+            return current.item;
+        }
 }

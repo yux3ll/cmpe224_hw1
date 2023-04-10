@@ -1,7 +1,4 @@
 package Q2;
-
-import Q2.Bag;
-
 public class Graph {
 //-----------------------------------------------------
 // Title: Graph
@@ -9,83 +6,133 @@ public class Graph {
 // ID: 43951623744
 // Section: 1
 // Assignment: 1
-// Description: Custom Q2.Graph implementation, has an additional method called RoundTripWithStops that calculates an ideal path for a round trip while not going over the same vertices twice.
+// Description: Custom Graph implementation, has an additional method called shortestCycleWithSourceAndDestination(sorry about the names) that calculates an ideal path for a round trip while not going over the same vertices twice.
 //-----------------------------------------------------
 
     private final int V; // number of vertices
-    private int E; // number of edges
-    private Bag<Integer>[] adj; // adjacency lists
+    // number of edges
+    private final Bag<Integer>[] adj; // adjacency lists
 
     public Graph(int V) {
         this.V = V;
-        this.E = 0;
         adj = (Bag<Integer>[]) new Bag[V]; // Create array of lists.
         for (int v = 0; v < V; v++) // Initialize all lists
-            adj[v] = new Bag<Integer>(); // to empty.
+            adj[v] = new Bag<>(); // to empty.
     }
 
     public void addEdge(int v, int w) {
         adj[v].add(w); // Add w to v’s list.
         adj[w].add(v); // Add v to w’s list.
-        E++;
     }
 
-    public Iterable<Integer> adj(int v) {
-        return adj[v];
-    }
-
-
-    public int[] roundTrip(int source, int midway) {
-        int[] path = shortestPath(source, midway); //get the shortest path from the source to the midway point
-
-
-        int[] path2 = shortestPath(midway, source); //get the shortest path from the midway point to the source
-        int[] path3 = new int[path.length + path2.length - 1]; //create a new array that will contain the path and the time
-        path3[0] = path.length + path2.length - 1; //set the first element of the array to the length of the path
-        for (int i = 1; i < path.length; i++) {  //for each element in the first path
-            path3[i] = path[i]; //add the element to the new array
-        }
-        for (int i = 1; i < path2.length; i++) { //for each element in the second path
-            path3[i + path.length - 1] = path2[i]; //add the element to the new array
-        }
-        return path3;   //return the path
-    }
-
-
-    public int[] shortestPath(int source, int destination) { //return an int array that contains the shortest path to be followed with no duplicates, and relaxation
-        int[] path = new int[V]; //array that contains the path
-        int[] distance = new int[V]; //array that contains the distance from the source to each vertex
-        boolean[] visited = new boolean[V]; //array that contains the visited vertices
-        //add here the previous shit i tried
-        for (int i = 0; i<V; i++){ //initialize the arrays
-            distance[i] = Integer.MAX_VALUE; //set the distance to infinity
-            visited[i] = false; //set the visited vertices to false
-        }
-        distance[source] = 0; //set the distance from the source to itself to 0
-        for (int i = 0; i<V; i++){ //for each vertex
-            int min = Integer.MAX_VALUE; //set the minimum distance to infinity
-            int minIndex = -1; //set the minimum index to -1
-            for (int j = 0; j<V; j++){  //for each vertex
-                if (!visited[j] && distance[j] < min){  //if the vertex is not visited and the distance is less than the minimum distance
-                    min = distance[j];  //set the minimum distance to the distance
-                    minIndex = j;   //set the minimum index to the index
-                }
-            }
-            visited[minIndex] = true;   //set the minimum index to visited
-            for (int j : adj[minIndex]){    //for each vertex adjacent to the minimum index
-                if (!visited[j] && distance[minIndex] + 1 < distance[j]){   //if the vertex is not visited and the distance from the source to the minimum index plus 1 is less than the distance from the source to the vertex
-                    distance[j] = distance[minIndex] + 1; //set the distance from the source to the vertex to the distance from the source to the minimum index plus 1
-                    path[j] = minIndex; //set the path to the minimum index
-                }
+    public int[] shortestCycleWithSourceAndDestination(int source, int destination){ // This method finds the shortest simple cycle that contains the source and destination vertices, not my best work, but it is formulaic and deterministic .
+        int[] allCycles = findAllCycles(); // This method finds all simple cycles in the graph.
+        int[] tempResult = new int[V*V]; // This array is used to store the current cycle being checked.
+        int cycleAmount = 0; // This variable is used to keep track of how many cycles are left to check.
+        int indexTracker = 0; // This variable is used to keep track of the index of the current cycle being checked.
+        int minIndexTracker = 0; // This variable is used to keep track of the index of the shortest cycle found.
+        int minCycleLength = V*V; // This variable is used to keep track of the length of the shortest cycle found.
+        for (int allCycle : allCycles) { // This loop counts the amount of cycles in the graph.
+            if (allCycle == -1) { // The -1 value is used to separate cycles.
+                cycleAmount++;
             }
         }
-        int[] shortestPath = new int[distance[destination]+1]; //create a new array that will contain the shortest path
-        int index = destination; //set the index to the destination
-        for (int i = distance[destination]; i>=0; i--){ //for each vertex in the shortest path
-            shortestPath[i] = index; //add the vertex to the array
-            index = path[index]; //set the index to the previous vertex
+        while(cycleAmount>0){ // This loop checks each cycle for the shortest cycle that contains the source and destination vertices.
+            int cycleLength = 0; // This variable is used to keep track of the length of the current cycle being checked.
+            while(allCycles[indexTracker] != -1){ // This loop adds the current cycle to the tempResult array.
+                tempResult[cycleLength] = allCycles[indexTracker];
+                indexTracker++;
+                cycleLength++;
+            } indexTracker++; // This is used to skip the -1 value.
+            if(tempResult[0] == source && tempResult[cycleLength-1] == source){ // This checks if the current cycle contains the source and destination vertices.
+               boolean containsDestination = false; // This variable is used to keep track of whether the current cycle contains the destination vertex.
+                for (int i = 0; i < cycleLength-1; i++) { // This loop checks if the current cycle contains the destination vertex.
+                    if (tempResult[i] == destination) {
+                        containsDestination = true;
+                        break;
+                    }
+                }
+                if(containsDestination){
+                    if(cycleLength < minCycleLength&&cycleLength>3){ // This checks if the current cycle is shorter than the shortest cycle found.
+                        minCycleLength = cycleLength; // This updates the shortest cycle length.
+                        minIndexTracker = indexTracker-cycleLength-1; // This updates the index of the shortest cycle.
+                    }
+                    else if(cycleLength == minCycleLength){ // This checks if the current cycle is the same length as the shortest cycle found.
+                        int sum1 = 0;
+                        int sum2 = 0;
+                        for (int i = 0; i < cycleLength-1; i++) { // This loop calculates the sum of the current cycle and the shortest cycle found.
+                            sum1 += tempResult[i];
+                           sum2 += allCycles[indexTracker-cycleLength-1+i];
+                        }
+                        if(sum2<sum1){  // This checks if the sum of the current cycle is smaller than the sum of the shortest cycle found.
+                            minIndexTracker = indexTracker-cycleLength-1;
+                        }
+                    }
+                }
+            }
+            cycleAmount--; // This decrements the amount of cycles left to check.
         }
-        return shortestPath;
+        int[] result = new int[minCycleLength-1]; // This array is used to store the shortest cycle that contains the source and destination vertices.
+        // This loop adds the shortest cycle to the result array.
+        System.arraycopy(allCycles, minIndexTracker, result, 0, minCycleLength - 1);
+    return result;
     }
 
+    public int[] findAllCycles() { // This method finds all simple cycles in the graph, returns the list as an int array divided with -1's.
+        boolean[] visited = new boolean[V]; // keep track of visited vertices
+        int[] path = new int[V*V]; // keep track of vertices in current path
+        int[] cycles = new int[V * V*V*V]; // keep track of cycles
+        int index = 0; // current index in cycles array
+
+        // perform DFS from each vertex
+        for (int v = 0; v < V; v++) { // for each vertex
+            visited[v] = true; // mark it as visited
+            path[0] = v; // add it to the path
+            index = findAllCyclesHelper(v, v, visited, path, 1, cycles, index); // find all cycles starting from v
+            visited[v] = false; // unmark it
+        }
+
+        // add -1 between cycles and trim the array to remove unused elements
+        int[] result = new int[index]; // create a new array with the correct size
+        System.arraycopy(cycles, 0, result, 0, index); // copy the cycles array to the result array
+        for (int i = 0; i < result.length - 1; i++) { // add -1 between cycles
+            if (result[i] == -1 && result[i + 1] == -1) { // if two -1's are next to each other
+                result[i] = 0; // replace the first one with 0
+            }
+        }
+        return result;
     }
+
+    private int findAllCyclesHelper(int start, int current, boolean[] visited, int[] path, int index, int[] cycles, int cycleIndex) {
+        // check if we have reached the start vertex and the path length is greater than 2
+        if (start == current && index > 2) {
+            // add the cycle to the result array
+            for (int i = 0; i < index; i++) {
+                cycles[cycleIndex++] = path[i];
+            }
+            cycles[cycleIndex++] = -1;
+            return cycleIndex;
+        }
+
+        // explore all adjacent vertices
+        for (int i = 0; i < adj[current].size(); i++) {
+            int next = adj[current].get(i);
+            if (!visited[next] || next == start) {
+                visited[next] = true;
+                path[index] = next;
+                cycleIndex = findAllCyclesHelper(start, next, visited, path, index + 1, cycles, cycleIndex);
+                visited[next] = false;
+            }
+        }
+        return cycleIndex;
+    }
+    }
+
+
+
+
+
+
+
+
+

@@ -11,25 +11,21 @@ public class Graph {
 //-----------------------------------------------------
 
     private final int V; // number of vertices
-    private int E; // number of edges
-    private Bag<Integer>[] adj; // adjacency lists
+    // number of edges
+    private final Bag<Integer>[] adj; // adjacency lists
     public Graph(int V)
     {
-        this.V = V; this.E = 0;
+        this.V = V;
         adj = (Bag<Integer>[]) new Bag[V]; // Create array of lists.
         for (int v = 0; v < V; v++) // Initialize all lists
-            adj[v] = new Bag<Integer>(); // to empty.
+            adj[v] = new Bag<>(); // to empty.
     }
-    public int V() { return V; }
-    public int E() { return E; }
+
     public void addEdge(int v, int w)
     {
         adj[v].add(w); // Add w to v’s list.
         adj[w].add(v); // Add v to w’s list.
-        E++;
     }
-    public Iterable<Integer> adj(int v)
-    { return adj[v]; }
 
     public int[] shortestPathWithStates(int source, int destination, int stateSwitch, int travel) //return an int array that contains the shortest path to be followed with no duplicates and the time necessary to travel
     {
@@ -52,9 +48,8 @@ public class Graph {
             }
         }
         pathWithStates[0] = path.length; //"
-        for(int i = 0; i<path.length; i++){ // add the path taken to the array(starting from 1 as opposed to 0)
-            pathWithStates[i+1] = path[i];
-        }
+        // add the path taken to the array(starting from 1 as opposed to 0)
+        System.arraycopy(path, 0, pathWithStates, 1, path.length);
         pathWithStates[path.length+1] = time; //add the time necessary to travel to the array
         return pathWithStates;
     }

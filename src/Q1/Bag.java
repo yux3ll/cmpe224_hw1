@@ -13,7 +13,6 @@ public class Bag<Item> implements Iterable<Item> {
 // Description: Q2.Bag implementation from the book.
 //-----------------------------------------------------
     private Node<Item> first;
-    private int n;
 
     private static class Node<Item> {
         private Item item;
@@ -22,11 +21,6 @@ public class Bag<Item> implements Iterable<Item> {
 
     public Bag() {
         first = null;
-        n = 0;
-    }
-
-    public int size() {
-        return n;
     }
 
     public void add(Item item) {
@@ -34,7 +28,6 @@ public class Bag<Item> implements Iterable<Item> {
         first = new Node<>();
         first.item = item;
         first.next = oldfirst;
-        n++;
     }
 
     public Iterator<Item> iterator()  {
