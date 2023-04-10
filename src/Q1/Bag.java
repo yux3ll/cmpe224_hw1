@@ -1,14 +1,16 @@
+package Q1;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class Bag<Item> implements Iterable<Item> {
 //-----------------------------------------------------
-// Title: Bag
+// Title: Q2.Bag
 // Author: Yüksel Çağlar Baypınar
 // ID: 43951623744
 // Section: 1
 // Assignment: 1
-// Description: Bag implementation from the book.
+// Description: Q2.Bag implementation from the book.
 //-----------------------------------------------------
     private Node<Item> first;
     private int n;
@@ -23,17 +25,13 @@ public class Bag<Item> implements Iterable<Item> {
         n = 0;
     }
 
-    public boolean isEmpty() {
-        return first == null;
-    }
-
     public int size() {
         return n;
     }
 
     public void add(Item item) {
         Node<Item> oldfirst = first;
-        first = new Node<Item>();
+        first = new Node<>();
         first.item = item;
         first.next = oldfirst;
         n++;

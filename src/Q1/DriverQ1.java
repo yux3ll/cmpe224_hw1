@@ -1,7 +1,9 @@
+package Q1;
+
 import java.util.Scanner;
 public class DriverQ1 {
 //-----------------------------------------------------
-// Title: DriverQ1
+// Title: Q1.DriverQ1
 // Author: Yüksel Çağlar Baypınar
 // ID: 43951623744
 // Section: 1
